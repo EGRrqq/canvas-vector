@@ -1,15 +1,10 @@
 /** @typedef{() => CanvasRenderingContext2D} TGetContext*/
-/** @typedef{(id: string, settings?: ICtxSettings) => {getCtx: TGetContext}} TSetContext*/
-
-/**
- * @typedef {object} ICtxSettings
- * @property {boolean} alpha
- */
+/** @typedef{(id: string, settings?: import("./Ctx").ICtxSettings) => {getCtx: TGetContext}} TSetContext*/
 
 /** @type {CanvasRenderingContext2D | null} */
 let CTX = null;
 
-/** @type {ICtxSettings} */
+/** @type {import("./Ctx").ICtxSettings} */
 const defaultSettings = {
 	alpha: false,
 };
