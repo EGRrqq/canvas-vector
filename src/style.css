@@ -1,0 +1,21 @@
+*,
+*::after,
+*::before {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+body {
+  overflow: hidden;
+}
+
+main {
+  display: flex;
+  min-height: 100dvh;
+}
+
+canvas {
+  width: 100%;
+}
+
