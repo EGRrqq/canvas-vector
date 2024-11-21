@@ -16,7 +16,7 @@ export const Board = (id, settings) => {
 
   // Необходимо для инициализации
   Ctx.setCtx(id, { alpha });
-  Settings.updateSettings(s);
+  Methods.clear().scale().updateSettings(s);
 
   return Methods;
 };
