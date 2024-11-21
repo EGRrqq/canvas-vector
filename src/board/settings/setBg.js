@@ -1,7 +1,7 @@
 import { Ctx } from "../../ctx/index.js";
 import { Draw } from "../../draw/index.js";
 
-/** @type {(color: import("./Settings.js").ISettings["bgColor"]) => void} */
+/** @type {(color: import("./Settings.js").ISettingsProps["bgColor"]) => void} */
 export const setBg = (color) => {
   const { width, height } = Ctx.getCtx().canvas;
 

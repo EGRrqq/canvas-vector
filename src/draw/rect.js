@@ -1,3 +1,4 @@
+import { Methods } from "../board/methods/index.js";
 import { Ctx } from "../ctx/index.js";
 
 /**
@@ -12,24 +13,25 @@ import { Ctx } from "../ctx/index.js";
 
 /** @type {IDrawSettings} */
 const defaultSettings = {
-	fillStyle: "#007bff",
+  fillStyle: "#007bff",
 };
 
 /** @type {import("./Draw.js").TDraw<IDrawRectData,IDrawSettings>} */
 export const rect = ({ rect }, settings) => {
-	const s = { ...defaultSettings, ...settings };
+  const s = { ...defaultSettings, ...settings };
 
-	const { position, size } = rect;
-	const halfWidth = size.width / 2;
-	const halfHeight = size.height / 2;
+  const { position, size } = rect;
+  const halfWidth = size.width / 2;
+  const halfHeight = size.height / 2;
 
-	Ctx.getCtx().fillStyle = s.fillStyle;
-	Ctx.getCtx().fillRect(
-		position.x - halfWidth,
-		position.y - halfHeight,
-		size.width,
-		size.height,
-	);
+  Ctx.getCtx().fillStyle = s.fillStyle;
+  Ctx.getCtx().fillRect(
+    position.x - halfWidth,
+    position.y - halfHeight,
+    size.width,
+    size.height
+  );
 
-	return;
+  return Methods;
 };
+

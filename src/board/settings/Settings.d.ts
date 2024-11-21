@@ -1,7 +1,8 @@
-export interface ISettings {
-	bgColor: CanvasFillStrokeStyles["strokeStyle"];
+export interface ISettingsProps {
+  bgColor: CanvasFillStrokeStyles["strokeStyle"];
 }
 
 export type TUpdateFunctions = {
-	[K in keyof ISettings]: (value: ISettings[K]) => void;
+  [K in keyof ISettingsProps]: (value: ISettingsProps[K]) => void;
 };
+

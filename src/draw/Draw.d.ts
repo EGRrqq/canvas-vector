@@ -1,7 +1,4 @@
-import type { rect } from "./rect.js";
+import { IMethods } from "../board/methods/Methods";
 
-export type TDraw<D, S> = (data: D, settings?: Partial<S>) => void;
+export type TDraw<D, S> = (data: D, settings?: Partial<S>) => IMethods;
 
-export interface IDraw {
-	rect: typeof rect;
-}
