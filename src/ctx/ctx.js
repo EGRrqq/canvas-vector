@@ -15,7 +15,7 @@ const defaultSettings = {
 };
 
 /** @type {TSetContext} */
-const setCtx = (id, settings) => {
+export const setCtx = (id, settings) => {
 	const s = { ...defaultSettings, ...settings };
 
 	const canvas = document.getElementById(id);
@@ -29,7 +29,7 @@ const setCtx = (id, settings) => {
 };
 
 /** @type {TGetContext} */
-const getCtx = () => {
+export const getCtx = () => {
 	if (!CTX) throw new Error("Ошибка во время получения 2д контекста");
 
 	return CTX;
