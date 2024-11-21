@@ -1,5 +1,5 @@
 /** @typedef{() => CanvasRenderingContext2D} TGetContext*/
-/** @typedef{(id: number, settings?: ICtxSettings) => {getCtx: TGetContext}} TSetContext*/
+/** @typedef{(id: string, settings?: ICtxSettings) => {getCtx: TGetContext}} TSetContext*/
 
 /**
  * @typedef {object} ICtxSettings
