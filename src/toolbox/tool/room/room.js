@@ -79,13 +79,17 @@ const roomHover = () => {
 		Draw.rect({ rect: { position: mousePosition, size: size } }, { fillStyle });
 	}
 
-	if (isDrawEnded) {
-		console.log("runin");
+	if (isDrawEnded && mouseMove.e && (mouseMove.flag || points.length)) {
+		const mousePosition = getMousePoint(mouseMove.e);
 		Draw.line({ path: points }, { fill: true });
 
 		// Рендерим изображение дивана
 		const imageSpawnPos = Furniture.getRoomCenterPoint(sofaImage, points);
 		Draw.image({ Image: sofaImage, position: imageSpawnPos });
+
+		if (Furniture.isPointInsideRoom(mousePosition, points)) {
+			console.log("WE MOVIN");
+		}
 	}
 
 	return { ...Methods, roomClick };
