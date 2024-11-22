@@ -1,4 +1,4 @@
-/** @type{(image: HTMLImageElement, points: import("../../../../models/base/IPoint").IPoint[]) => import("../../../../models/base/IPoint").IPoint} */
+/** @type{(image: HTMLImageElement, points: import("../../../models/base/IPoint").IPoint[]) => import("../../../models/base/IPoint").IPoint} */
 export const getRoomCenterPoint = (image, points) => {
 	const minX = Math.min(...points.map((p) => p.x));
 	const maxX = Math.max(...points.map((p) => p.x));

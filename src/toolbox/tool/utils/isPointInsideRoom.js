@@ -1,6 +1,5 @@
 // ray-tracing алгоритм
 /** @type{(mousePosition: import("../../../models/base/IPoint").IPoint, points: import("../../../models/base/IPoint").IPoint[]) => boolean} */
-
 export const isPointInsideRoom = (mousePosition, points) => {
 	let intersections = 0;
 	const { x, y } = mousePosition;

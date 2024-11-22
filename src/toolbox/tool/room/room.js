@@ -2,10 +2,7 @@ import { Methods } from "../../../board/methods/index.js";
 import { Draw } from "../../../draw/index.js";
 import { Handlers } from "../handlers/index.js";
 import { getMousePoint } from "../utils/getMousePoint.js";
-import { getRoomCenterPoint } from "../utils/getRoomCenterPoint.js";
-import { isPointInsideRoom } from "../utils/isPointInsideRoom.js";
-import * as Furniture from "./furniture/furniture.js";
-import { sofaImage } from "./furniture/sofa.js";
+import * as Sofa from "./furniture/sofa.js";
 import { getMagnetPoint } from "./getMagnetPoint.js";
 
 /**
@@ -85,17 +82,10 @@ const roomHover = () => {
 		const mousePosition = getMousePoint(mouseMove.e);
 		Draw.line({ path: points }, { fill: true });
 
-		// Рендерим изображение дивана
-		const imagePos = getRoomCenterPoint(sofaImage, points);
-		Draw.image({ Image: sofaImage, position: imagePos });
+		Sofa.init(points);
+		Sofa.updateSofaPosition(mousePosition, points);
 
-		if (isPointInsideRoom(mousePosition, points)) {
-			console.log("WE MOVIN");
-		}
-
-		if (Furniture.isPointInsideFurniture(sofaImage, mousePosition, imagePos)) {
-			console.log("WE SITTIN");
-		}
+		// Draw.image({ Image: Sofa.sofaImage, position: mousePosition });
 	}
 
 	return { ...Methods, roomClick };
@@ -103,11 +93,9 @@ const roomHover = () => {
 
 /** @type {IRoom["roomClick"]} */
 const roomClick = () => {
-	if (isDrawEnded) return { ...Methods, roomHover };
+	const { mouseDown, mouseUp } = Handlers.getMouseHandlers();
 
-	const { mouseDown } = Handlers.getMouseHandlers();
-
-	if (mouseDown.flag && mouseDown.e) {
+	if (!isDrawEnded && mouseDown.flag && mouseDown.e) {
 		const mousePosition = getMousePoint(mouseDown.e);
 
 		const magnetPoint = getMagnetPoint(points, mousePosition);
@@ -126,6 +114,15 @@ const roomClick = () => {
 
 		points.push(mousePosition);
 		mouseDown.flag = false;
+	}
+
+	if (isDrawEnded && mouseDown.flag && mouseDown.e) {
+		const mousePosition = getMousePoint(mouseDown.e);
+		Sofa.startDraggingSofa(mousePosition);
+	}
+	if (mouseUp.flag) {
+		console.log(mouseUp.flag);
+		Sofa.stopDraggingSofa();
 	}
 
 	return { ...Methods, roomHover };
