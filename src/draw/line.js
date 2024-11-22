@@ -18,7 +18,7 @@ import { Ctx } from "../ctx/index.js";
 /** @type {ILineSettings} */
 const defaultSettings = {
 	strokeStyle: "#000",
-	lineWidth: 0.5,
+	lineWidth: 1.5,
 	fill: false,
 	fillStyle: "#ccc",
 };

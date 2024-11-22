@@ -100,7 +100,6 @@ const roomClick = () => {
 			mouseDown.flag = false;
 
 			if (magnetPoint.isFirstPoint) {
-				console.log("END");
 				isDrawEnded = true;
 				Toolbox.setActiveTool("cursor");
 			}
