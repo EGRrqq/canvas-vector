@@ -2,6 +2,7 @@ import { Methods } from "../../../board/methods/index.js";
 import { Draw } from "../../../draw/index.js";
 import { Handlers } from "../handlers/index.js";
 import { getMousePoint } from "../utils/getMousePoint.js";
+import { getMagnetPoint } from "./getMagnetPoint.js";
 
 /**
  * @template T
@@ -35,26 +36,29 @@ const roomHover = () => {
 
 		if (points.length) {
 			const magnetPoint = getMagnetPoint(points, mousePosition);
-
-			// Проверка на магнитную точку
-			if (magnetPoint) {
-				// рисуем линию и квадрат к магнитной точке
-				Draw.line({ path: points, mousePosition: magnetPoint });
-
-				Draw.rect(
-					{ rect: { position: magnetPoint, size: size } },
-					{ fillStyle: "blue" },
-				);
-			} else {
+			if (!magnetPoint) {
 				// рисуем линию между точками и квадрат на ховере
 				Draw.line({ path: points, mousePosition });
-
 				Draw.rect(
 					{ rect: { position: mousePosition, size: size } },
 					{ fillStyle },
 				);
+
+				return { ...Methods, roomClick };
 			}
+
+			// рисуем линию и квадрат к магнитной точке
+			Draw.line({ path: points, mousePosition: magnetPoint });
+			Draw.rect(
+				{ rect: { position: magnetPoint, size: size } },
+				{ fillStyle: "blue" },
+			);
+
+			return { ...Methods, roomClick };
 		}
+
+		// Рендерим квадрат на ховер даже если нет точек
+		Draw.rect({ rect: { position: mousePosition, size: size } }, { fillStyle });
 	}
 
 	return { ...Methods, roomClick };
@@ -73,17 +77,6 @@ const roomClick = () => {
 	}
 
 	return { ...Methods, roomHover };
-};
-
-/** @type {(points: import("../../../models/base/IPoint.js").IPoint[], mousePosition: import("../../../models/base/IPoint.js").IPoint) =>  import("../../../models/base/IPoint.js").IPoint | null} */
-const getMagnetPoint = (points, mousePos) => {
-	if (points.length > 2) {
-		const point = points[0];
-		if (Math.hypot(point.x - mousePos.x, point.y - mousePos.y) < 8) {
-			return point; // Возвращаем точку, к которой магнитится курсор
-		}
-	}
-	return null; // Если магнитных точек нет
 };
 
 /** @type {IRoom} */
