@@ -1,6 +1,6 @@
 import { Ctx } from "../../../ctx/index.js";
 
-/** @type{(e:MouseEvent) => import ("../../../models/base/IPoint.js").IPoint} */
+/** @type{(e:MouseEvent) => import("../../../models/base/IPoint.js").IPoint} */
 export const getMousePoint = (e) => {
 	const ctx = Ctx.getCtx();
 	const canvas = ctx.canvas;

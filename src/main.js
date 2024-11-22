@@ -1,4 +1,5 @@
 import { Board } from "./board/index.js";
+import { Room } from "./toolbox/tool/room/room.js";
 
 document.addEventListener("DOMContentLoaded", render);
 
@@ -11,6 +12,8 @@ function render() {
 		.getActiveTool()
 		.room.roomHover()
 		.roomClick();
+
+	Room.roomHover();
 
 	window.requestAnimationFrame(render);
 }

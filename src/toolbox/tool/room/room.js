@@ -1,5 +1,4 @@
 import { Methods } from "../../../board/methods/index.js";
-import { Ctx } from "../../../ctx/index.js";
 import { Draw } from "../../../draw/index.js";
 import { Handlers } from "../handlers/index.js";
 import { getMousePoint } from "../utils/getMousePoint.js";
@@ -23,7 +22,7 @@ const points = []; // Массив для хранения точек
 const roomHover = () => {
 	const { mouseMove } = Handlers.getMouseHandlers();
 
-	if (mouseMove.flag) {
+	if (mouseMove.e && (mouseMove.flag || points.length)) {
 		/** @type {import ("../../../models/base/ISize.js").ISize} */
 		const size = { h: squareSize, w: squareSize };
 		const mousePosition = getMousePoint(mouseMove.e);
@@ -48,7 +47,7 @@ const roomHover = () => {
 const roomClick = () => {
 	const { mouseDown } = Handlers.getMouseHandlers();
 
-	if (mouseDown.flag) {
+	if (mouseDown.flag && mouseDown.e) {
 		const mousePosition = getMousePoint(mouseDown.e);
 
 		// Добавляем новую точку

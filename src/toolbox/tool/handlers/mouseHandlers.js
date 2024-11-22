@@ -1,22 +1,16 @@
 import { Ctx } from "../../../ctx/index.js";
 
 /**
- * @typedef {object} IEventFalse
- * @property {false} flag
- * @property {null} e
- */
-
-/**
- * @typedef {object} IEventTrue
- * @property {true} flag
- * @property {MouseEvent} e
+ * @typedef {object} IEvent
+ * @property {boolean} flag
+ * @property {MouseEvent | null} e
  */
 
 /**
  * @typedef {object} IEvents
- * @property {IEventFalse | IEventTrue} mouseMove
- * @property {IEventFalse | IEventTrue} mouseUp
- * @property {IEventFalse | IEventTrue} mouseDown
+ * @property {IEvent} mouseMove
+ * @property {IEvent} mouseUp
+ * @property {IEvent} mouseDown
  */
 
 /** @typedef {(e: MouseEvent) => void} TMouseHandler*/
@@ -37,17 +31,11 @@ const mouseMove = (e) => {
 };
 /** @type {TMouseHandler} */
 const mouseLeave = () => {
-	events.mouseMove = {
-		flag: false,
-		e: null,
-	};
+	events.mouseMove.flag = false;
 };
 /** @type {TMouseHandler} */
 const mouseUp = (e) => {
-	events.mouseDown = {
-		flag: false,
-		e: null,
-	};
+	events.mouseDown.flag = false;
 
 	events.mouseUp = {
 		flag: true,
@@ -56,10 +44,7 @@ const mouseUp = (e) => {
 };
 /** @type {TMouseHandler} */
 const mouseDown = (e) => {
-	events.mouseUp = {
-		flag: false,
-		e: null,
-	};
+	events.mouseUp.flag = false;
 
 	events.mouseDown = {
 		flag: true,
