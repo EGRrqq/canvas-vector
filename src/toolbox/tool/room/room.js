@@ -75,13 +75,41 @@ const roomHover = () => {
 };
 
 /** @type {IRoom["roomClick"]} */
+// const roomClick = () => {
+// 	const { mouseDown } = Handlers.getMouseHandlers();
+
+// 	if (mouseDown.flag && mouseDown.e) {
+// 		const mousePosition = getMousePoint(mouseDown.e);
+
+// 		// Добавляем новую точку
+// 		points.push(mousePosition);
+// 		mouseDown.flag = false;
+// 	}
+
+// 	return { ...Methods, roomHover };
+// };
+
+/** @type {IRoom["roomClick"]} */
 const roomClick = () => {
 	const { mouseDown } = Handlers.getMouseHandlers();
 
 	if (mouseDown.flag && mouseDown.e) {
 		const mousePosition = getMousePoint(mouseDown.e);
 
-		// Добавляем новую точку
+		const magnetPoint = getMagnetPoint(points, mousePosition);
+
+		// Проверяем магнит для добавления новой точки
+		if (magnetPoint) {
+			points.push(magnetPoint.mousePosition);
+			mouseDown.flag = false;
+
+			if (magnetPoint.isFirstPoint) {
+				console.log("END");
+			}
+
+			return { ...Methods, roomHover };
+		}
+
 		points.push(mousePosition);
 		mouseDown.flag = false;
 	}
