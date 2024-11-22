@@ -19,13 +19,14 @@ const defaultSettings = {
 /** @type {import("./Draw.js").TDraw<IRectData,IRectSettings>} */
 export const rect = ({ rect }, settings) => {
 	const s = { ...defaultSettings, ...settings };
+	const ctx = Ctx.getCtx();
 
 	const { position, size } = rect;
 	const halfWidth = size.width / 2;
 	const halfHeight = size.height / 2;
 
-	Ctx.getCtx().fillStyle = s.fillStyle;
-	Ctx.getCtx().fillRect(
+	ctx.fillStyle = s.fillStyle;
+	ctx.fillRect(
 		position.x - halfWidth,
 		position.y - halfHeight,
 		size.width,
