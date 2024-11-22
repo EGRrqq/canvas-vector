@@ -52,6 +52,7 @@ const roomClick = () => {
 
 		// Добавляем новую точку
 		points.push(mousePosition);
+		mouseDown.flag = false;
 	}
 
 	return { ...Methods, roomHover };

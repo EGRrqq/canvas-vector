@@ -51,6 +51,10 @@ const mouseDown = (e) => {
 		e,
 	};
 };
+/** @type {TMouseHandler} */
+const contextMenu = (e) => {
+	e.preventDefault(); // Предотвращаем появление контекстного меню
+};
 
 export const setMouseHandlers = () => {
 	const canvas = Ctx.getCtx().canvas;
@@ -59,6 +63,7 @@ export const setMouseHandlers = () => {
 	canvas.addEventListener("mouseleave", mouseLeave);
 	canvas.addEventListener("mouseup", mouseUp);
 	canvas.addEventListener("mousedown", mouseDown);
+	canvas.addEventListener("contextmenu", contextMenu);
 };
 
 /** @type {() => IEvents} */
