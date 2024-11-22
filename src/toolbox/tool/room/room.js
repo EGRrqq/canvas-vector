@@ -1,8 +1,9 @@
 import { Methods } from "../../../board/methods/index.js";
 import { Draw } from "../../../draw/index.js";
-import { Toolbox } from "../../index.js";
 import { Handlers } from "../handlers/index.js";
 import { getMousePoint } from "../utils/getMousePoint.js";
+import * as Furniture from "./furniture/furniture.js";
+import { sofaImage } from "./furniture/sofa.js";
 import { getMagnetPoint } from "./getMagnetPoint.js";
 
 /**
@@ -25,11 +26,9 @@ export let isDrawEnded = false;
 
 /** @type {IRoom["roomHover"]} */
 const roomHover = () => {
-	if (isDrawEnded) return { ...Methods, roomClick };
-
 	const { mouseMove } = Handlers.getMouseHandlers();
 
-	if (mouseMove.e && (mouseMove.flag || points.length)) {
+	if (!isDrawEnded && mouseMove.e && (mouseMove.flag || points.length)) {
 		/** @type {import ("../../../models/base/ISize.js").ISize} */
 		const size = { h: squareSize, w: squareSize };
 		const mousePosition = getMousePoint(mouseMove.e);
@@ -80,6 +79,15 @@ const roomHover = () => {
 		Draw.rect({ rect: { position: mousePosition, size: size } }, { fillStyle });
 	}
 
+	if (isDrawEnded) {
+		console.log("runin");
+		Draw.line({ path: points }, { fill: true });
+
+		// Рендерим изображение дивана
+		const imageSpawnPos = Furniture.getRoomCenterPoint(sofaImage, points);
+		Draw.image({ Image: sofaImage, position: imageSpawnPos });
+	}
+
 	return { ...Methods, roomClick };
 };
 
@@ -101,7 +109,6 @@ const roomClick = () => {
 
 			if (magnetPoint.isFirstPoint) {
 				isDrawEnded = true;
-				Toolbox.setActiveTool("cursor");
 			}
 
 			return { ...Methods, roomHover };
