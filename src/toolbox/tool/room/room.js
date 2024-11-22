@@ -28,6 +28,7 @@ const roomHover = () => {
 		const size = { h: squareSize, w: squareSize };
 		const mousePosition = getMousePoint(mouseMove.e);
 		const fillStyle = "black";
+		const fillStyleAction = "blue";
 
 		// Рисуем точки из массива
 		for (const p of points) {
@@ -48,10 +49,19 @@ const roomHover = () => {
 			}
 
 			// рисуем линию и квадрат к магнитной точке
-			Draw.line({ path: points, mousePosition: magnetPoint });
+			Draw.line({ path: points, mousePosition: magnetPoint.mousePosition });
+			if (!magnetPoint.isFirstPoint) {
+				Draw.rect(
+					{ rect: { position: magnetPoint.mousePosition, size: size } },
+					{ fillStyle },
+				);
+
+				return { ...Methods, roomClick };
+			}
+			// помечаем возможно финиша с помощью цвета
 			Draw.rect(
-				{ rect: { position: magnetPoint, size: size } },
-				{ fillStyle: "blue" },
+				{ rect: { position: magnetPoint.mousePosition, size: size } },
+				{ fillStyle: fillStyleAction },
 			);
 
 			return { ...Methods, roomClick };
