@@ -2,36 +2,35 @@ import { Methods } from "../board/methods/index.js";
 import { Ctx } from "../ctx/index.js";
 
 /**
- * @typedef {object} IDrawSettings
+ * @typedef {object} IRectSettings
  * @property {CanvasFillStrokeStyles["fillStyle"]} fillStyle
  */
 
 /**
- * @typedef {object} IDrawRectData
+ * @typedef {object} IRectData
  * @property {import("../models/elems/IRect.js").IRect} rect
  */
 
-/** @type {IDrawSettings} */
+/** @type {IRectSettings} */
 const defaultSettings = {
-  fillStyle: "#007bff",
+	fillStyle: "#007bff",
 };
 
-/** @type {import("./Draw.js").TDraw<IDrawRectData,IDrawSettings>} */
+/** @type {import("./Draw.js").TDraw<IRectData,IRectSettings>} */
 export const rect = ({ rect }, settings) => {
-  const s = { ...defaultSettings, ...settings };
+	const s = { ...defaultSettings, ...settings };
 
-  const { position, size } = rect;
-  const halfWidth = size.width / 2;
-  const halfHeight = size.height / 2;
+	const { position, size } = rect;
+	const halfWidth = size.width / 2;
+	const halfHeight = size.height / 2;
 
-  Ctx.getCtx().fillStyle = s.fillStyle;
-  Ctx.getCtx().fillRect(
-    position.x - halfWidth,
-    position.y - halfHeight,
-    size.width,
-    size.height
-  );
+	Ctx.getCtx().fillStyle = s.fillStyle;
+	Ctx.getCtx().fillRect(
+		position.x - halfWidth,
+		position.y - halfHeight,
+		size.width,
+		size.height,
+	);
 
-  return Methods;
+	return Methods;
 };
-
