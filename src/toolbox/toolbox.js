@@ -17,3 +17,6 @@ export const setActiveTool = (type) => {
 
 	return { getActiveTool };
 };
+
+/** @type{() => import("./tool/Tool.js").TTools} */
+export const getTools = () => Tools;

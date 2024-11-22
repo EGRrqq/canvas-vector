@@ -1,5 +1,6 @@
 import { Methods } from "../../../board/methods/index.js";
 import { Draw } from "../../../draw/index.js";
+import { Toolbox } from "../../index.js";
 import { Handlers } from "../handlers/index.js";
 import { getMousePoint } from "../utils/getMousePoint.js";
 import { getMagnetPoint } from "./getMagnetPoint.js";
@@ -13,14 +14,19 @@ import { getMagnetPoint } from "./getMagnetPoint.js";
  * @typedef {object} IRoom
  * @property {() => IRoomReturn<Pick<IRoom, "roomHover">>} roomClick
  * @property {() => IRoomReturn<Pick<IRoom, "roomClick">>} roomHover
+ * @property {() => boolean} isDrawEnded
+ * @property {() => import("../../../models/base/IPoint.js").IPoint[]} points
  */
 
 const squareSize = 5;
 /** @type {import("../../../models/base/IPoint.js").IPoint[]} */
-const points = []; // Массив для хранения точек
+export const points = []; // Массив для хранения точек
+export let isDrawEnded = false;
 
 /** @type {IRoom["roomHover"]} */
 const roomHover = () => {
+	if (isDrawEnded) return { ...Methods, roomClick };
+
 	const { mouseMove } = Handlers.getMouseHandlers();
 
 	if (mouseMove.e && (mouseMove.flag || points.length)) {
@@ -49,7 +55,10 @@ const roomHover = () => {
 			}
 
 			// рисуем линию и квадрат к магнитной точке
-			Draw.line({ path: points, mousePosition: magnetPoint.mousePosition });
+			Draw.line(
+				{ path: points, mousePosition: magnetPoint.mousePosition },
+				{ fill: isDrawEnded },
+			);
 			if (!magnetPoint.isFirstPoint) {
 				Draw.rect(
 					{ rect: { position: magnetPoint.mousePosition, size: size } },
@@ -75,22 +84,9 @@ const roomHover = () => {
 };
 
 /** @type {IRoom["roomClick"]} */
-// const roomClick = () => {
-// 	const { mouseDown } = Handlers.getMouseHandlers();
-
-// 	if (mouseDown.flag && mouseDown.e) {
-// 		const mousePosition = getMousePoint(mouseDown.e);
-
-// 		// Добавляем новую точку
-// 		points.push(mousePosition);
-// 		mouseDown.flag = false;
-// 	}
-
-// 	return { ...Methods, roomHover };
-// };
-
-/** @type {IRoom["roomClick"]} */
 const roomClick = () => {
+	if (isDrawEnded) return { ...Methods, roomHover };
+
 	const { mouseDown } = Handlers.getMouseHandlers();
 
 	if (mouseDown.flag && mouseDown.e) {
@@ -105,6 +101,8 @@ const roomClick = () => {
 
 			if (magnetPoint.isFirstPoint) {
 				console.log("END");
+				isDrawEnded = true;
+				Toolbox.setActiveTool("cursor");
 			}
 
 			return { ...Methods, roomHover };
@@ -118,4 +116,9 @@ const roomClick = () => {
 };
 
 /** @type {IRoom} */
-export const Room = { roomClick, roomHover };
+export const Room = {
+	roomClick,
+	roomHover,
+	isDrawEnded: () => isDrawEnded,
+	points: () => points,
+};
