@@ -1,10 +1,10 @@
 {
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
-    "strict": true,
-    "module": "ESNext"
-  },
-  "exclude": ["node_modules"]
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"strict": true,
+		"module": "ESNext",
+		"lib": ["ESNext", "DOM", "DOM.Iterable"]
+	},
+	"exclude": ["node_modules"]
 }
-
