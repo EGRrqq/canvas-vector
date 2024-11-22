@@ -119,7 +119,6 @@ const roomClick = () => {
 		Sofa.startDraggingSofa(mousePosition);
 	}
 	if (mouseUp.flag) {
-		console.log(mouseUp.flag);
 		Sofa.stopDraggingSofa();
 	}
 
