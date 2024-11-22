@@ -2,6 +2,8 @@ import { Methods } from "../../../board/methods/index.js";
 import { Draw } from "../../../draw/index.js";
 import { Handlers } from "../handlers/index.js";
 import { getMousePoint } from "../utils/getMousePoint.js";
+import { getRoomCenterPoint } from "../utils/getRoomCenterPoint.js";
+import { isPointInsideRoom } from "../utils/isPointInsideRoom.js";
 import * as Furniture from "./furniture/furniture.js";
 import { sofaImage } from "./furniture/sofa.js";
 import { getMagnetPoint } from "./getMagnetPoint.js";
@@ -84,11 +86,15 @@ const roomHover = () => {
 		Draw.line({ path: points }, { fill: true });
 
 		// Рендерим изображение дивана
-		const imageSpawnPos = Furniture.getRoomCenterPoint(sofaImage, points);
-		Draw.image({ Image: sofaImage, position: imageSpawnPos });
+		const imagePos = getRoomCenterPoint(sofaImage, points);
+		Draw.image({ Image: sofaImage, position: imagePos });
 
-		if (Furniture.isPointInsideRoom(mousePosition, points)) {
+		if (isPointInsideRoom(mousePosition, points)) {
 			console.log("WE MOVIN");
+		}
+
+		if (Furniture.isPointInsideFurniture(sofaImage, mousePosition, imagePos)) {
+			console.log("WE SITTIN");
 		}
 	}
 
