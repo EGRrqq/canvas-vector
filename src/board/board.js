@@ -1,4 +1,5 @@
 import { Ctx } from "../ctx/index.js";
+import { Handlers } from "../toolbox/tool/handlers/index.js";
 import { Methods } from "./methods/index.js";
 
 /** @typedef{(id: string, settings?: Partial<import("./Board.js").IBoardSettings>) => import("./methods/Methods.js").IMethods} TBoard */
@@ -15,6 +16,7 @@ export const Board = (id, settings) => {
 
 	// Необходимо для инициализации
 	Ctx.setCtx(id, { alpha });
+	Handlers.setMouseHandlers();
 	Methods.clear().scale().updateSettings(s);
 
 	return Methods;

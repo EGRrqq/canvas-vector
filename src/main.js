@@ -1,8 +1,15 @@
 import { Board } from "./board/index.js";
 
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", render);
 
-function init() {
-  Board("board", { alpha: false });
+const Canvas = Board("board", { alpha: false });
+
+function render() {
+	Canvas.clear()
+		.scale()
+		.updateSettings({ bgColor: "#fff" })
+		.getActiveTool()
+		.room.hover();
+
+	window.requestAnimationFrame(render);
 }
-
