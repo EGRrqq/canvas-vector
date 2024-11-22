@@ -84,8 +84,6 @@ const roomHover = () => {
 
 		Sofa.init(points);
 		Sofa.updateSofaPosition(mousePosition, points);
-
-		// Draw.image({ Image: Sofa.sofaImage, position: mousePosition });
 	}
 
 	return { ...Methods, roomClick };
