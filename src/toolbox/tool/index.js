@@ -1,5 +1,5 @@
-import * as room from "./room/room.js";
+import { Room } from "./room/room.js";
 
 export const Tools = {
-	room,
+	room: Room,
 };

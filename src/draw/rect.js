@@ -22,16 +22,11 @@ export const rect = ({ rect }, settings) => {
 	const ctx = Ctx.getCtx();
 
 	const { position, size } = rect;
-	const halfWidth = size.width / 2;
-	const halfHeight = size.height / 2;
+	const halfWidth = size.w / 2;
+	const halfHeight = size.h / 2;
 
 	ctx.fillStyle = s.fillStyle;
-	ctx.fillRect(
-		position.x - halfWidth,
-		position.y - halfHeight,
-		size.width,
-		size.height,
-	);
+	ctx.fillRect(position.x - halfWidth, position.y - halfHeight, size.w, size.h);
 
 	return Methods;
 };

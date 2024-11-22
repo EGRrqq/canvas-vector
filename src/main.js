@@ -9,7 +9,8 @@ function render() {
 		.scale()
 		.updateSettings({ bgColor: "#fff" })
 		.getActiveTool()
-		.room.hover();
+		.room.roomHover()
+		.roomClick();
 
 	window.requestAnimationFrame(render);
 }
