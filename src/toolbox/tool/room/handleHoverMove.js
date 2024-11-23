@@ -36,20 +36,9 @@ export const handleHoverMove = ({ points, e, isDrawEnded }) => {
 			{ path: points, mousePosition: magnetPoint.mousePosition },
 			{ fill: isDrawEnded },
 		);
-
-		if (!magnetPoint.isFirstPoint) {
-			Draw.rect(
-				{ rect: { position: magnetPoint.mousePosition, size: size } },
-				{ fillStyle },
-			);
-
-			return { ...Methods, roomClick: Room.roomClick };
-		}
-
-		// помечаем начальную точку цветом
 		Draw.rect(
 			{ rect: { position: magnetPoint.mousePosition, size: size } },
-			{ fillStyle: fillStyleAction },
+			{ fillStyle: magnetPoint.isFirstPoint ? fillStyleAction : fillStyle },
 		);
 
 		return { ...Methods, roomClick: Room.roomClick };
