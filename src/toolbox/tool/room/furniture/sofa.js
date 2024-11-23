@@ -8,7 +8,7 @@ sofaImage.src = "./toolbox/tool/room/furniture/sofa.png";
 
 /** @type {import("../../../../models/base/IPoint").IPoint} */
 let sofaPos = { x: 0, y: 0 };
-const sofaRotationAngle = 0;
+let sofaRotationAngle = 0;
 let isDraggingSofa = false;
 
 let initFlag = true;
@@ -20,6 +20,7 @@ export const init = (points) => {
 	if (initFlag) sofaPos = getRoomCenterPoint(sofaImage, points);
 	initFlag = false;
 
+	console.log(sofaRotationAngle);
 	Draw.image({ image: sofaImage, position: sofaPos, angle: sofaRotationAngle });
 };
 
@@ -44,6 +45,7 @@ export const updateSofaPosition = (mousePos, points) => {
 
 		const sides = getRoomSides(points);
 		let isMagnetized = false;
+		let newRotationAngle = sofaRotationAngle; // Инициализируем новый угол поворота
 
 		for (const side of sides) {
 			const { start, end } = side;
@@ -81,6 +83,9 @@ export const updateSofaPosition = (mousePos, points) => {
 					newSofaPosition.x = closestPoint.x - sofaImage.width / 2;
 					newSofaPosition.y = closestPoint.y;
 					isMagnetized = true;
+
+					// Вычисляем угол поворота дивана
+					newRotationAngle = calculateAngle(side); // Преобразуем радианы в градусы
 					break;
 				}
 			}
@@ -88,6 +93,10 @@ export const updateSofaPosition = (mousePos, points) => {
 
 		if (isMagnetized || isPointInsideRoom(newSofaPosition, points)) {
 			sofaPos = newSofaPosition;
+			sofaRotationAngle = newRotationAngle; // Применяем новый угол поворота
+		}
+		if (!isMagnetized) {
+			sofaRotationAngle = 0;
 		}
 	}
 };
@@ -103,4 +112,36 @@ const getRoomSides = (points) => {
 		sides.push({ start, end });
 	}
 	return sides;
+};
+
+/** @type {(props:{start: import("../../../../models/base/IPoint").IPoint, end: import("../../../../models/base/IPoint").IPoint}) => number} */
+const calculateAngle = ({ start, end }) => {
+	const dx = end.x - start.x;
+	const dy = end.y - start.y;
+	return Math.atan2(dy, dx) * (180 / Math.PI) + 180;
+};
+
+/** @type {(position: import("../../../../models/base/IPoint").IPoint, angle: number) => { top: import("../../../../models/base/IPoint").IPoint, bottom: import("../../../../models/base/IPoint").IPoint, left: import("../../../../models/base/IPoint").IPoint, right: import("../../../../models/base/IPoint").IPoint }} */
+const getSofaKeyPoints = (position, angle) => {
+	const centerX = position.x + sofaImage.width / 2;
+	const centerY = position.y + sofaImage.height / 2;
+
+	const top = {
+		x: centerX + (sofaImage.width / 2) * Math.cos(angle),
+		y: centerY - (sofaImage.height / 2) * Math.sin(angle),
+	};
+	const bottom = {
+		x: centerX - (sofaImage.width / 2) * Math.cos(angle),
+		y: centerY + (sofaImage.height / 2) * Math.sin(angle),
+	};
+	const left = {
+		x: centerX - (sofaImage.width / 2) * Math.sin(angle),
+		y: centerY - (sofaImage.height / 2) * Math.cos(angle),
+	};
+	const right = {
+		x: centerX + (sofaImage.width / 2) * Math.sin(angle),
+		y: centerY + (sofaImage.height / 2) * Math.cos(angle),
+	};
+
+	return { top, bottom, left, right };
 };
