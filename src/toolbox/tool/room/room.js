@@ -4,7 +4,7 @@ import { Handlers } from "../handlers/index.js";
 import { getMousePoint } from "../utils/getMousePoint.js";
 import * as Sofa from "./furniture/sofa.js";
 import { getMagnetPoint } from "./getMagnetPoint.js";
-import { handleHoverMove } from "./handleHoverMove.js";
+import { handleHoverDrawingMove } from "./handleHoverDrawingMove.js";
 
 /** @type {import("../../../models/base/IPoint.js").IPoint[]} */
 export const points = []; // Массив для хранения точек
@@ -15,11 +15,11 @@ const roomHover = () => {
 	const { mouseMove } = Handlers.getMouseHandlers();
 
 	if (!isDrawEnded && mouseMove.e && (mouseMove.flag || points.length))
-		handleHoverMove({ e: mouseMove.e, isDrawEnded, points });
+		handleHoverDrawingMove({ e: mouseMove.e, isDrawEnded, points });
 
 	if (isDrawEnded && mouseMove.e && (mouseMove.flag || points.length)) {
 		const mousePosition = getMousePoint(mouseMove.e);
-		Draw.line({ path: points }, { fill: true });
+		Draw.line({ path: points }, { fill: isDrawEnded });
 
 		Sofa.init(points);
 		Sofa.updateSofaPosition(mousePosition, points);
@@ -34,7 +34,6 @@ const roomClick = () => {
 
 	if (!isDrawEnded && mouseDown.flag && mouseDown.e) {
 		const mousePosition = getMousePoint(mouseDown.e);
-
 		const magnetPoint = getMagnetPoint(points, mousePosition);
 
 		// Проверяем магнит для добавления новой точки
@@ -53,12 +52,13 @@ const roomClick = () => {
 		mouseDown.flag = false;
 	}
 
-	if (isDrawEnded && mouseDown.flag && mouseDown.e) {
-		const mousePosition = getMousePoint(mouseDown.e);
-		Sofa.startDraggingSofa(mousePosition);
-	}
-	if (mouseUp.flag) {
-		Sofa.stopDraggingSofa();
+	if (isDrawEnded) {
+		if (mouseDown.flag && mouseDown.e) {
+			const mousePosition = getMousePoint(mouseDown.e);
+			Sofa.startDraggingSofa(mousePosition);
+		}
+
+		if (mouseUp.flag) Sofa.stopDraggingSofa();
 	}
 
 	return { ...Methods, roomHover };

@@ -11,7 +11,7 @@ const fillStyle = "black";
 const fillStyleAction = "blue";
 
 /** @type {(props: {points: import("../../../models/base/IPoint.js").IPoint[], e: MouseEvent, isDrawEnded: boolean}) => ReturnType<import("./Room.js").IRoom["roomHover"] >| void} */
-export const handleHoverMove = ({ points, e, isDrawEnded }) => {
+export const handleHoverDrawingMove = ({ points, e, isDrawEnded }) => {
 	const mousePosition = getMousePoint(e);
 
 	// Рисуем точки из массива
