@@ -6,14 +6,15 @@ import { isPointInsideFurniture } from "./furniture.js";
 const sofaImage = new Image();
 sofaImage.src = "./toolbox/tool/room/furniture/sofa.png";
 
-let isDraggingSofa = false;
 /** @type {import("../../../../models/base/IPoint").IPoint} */
 let sofaPos = { x: 0, y: 0 };
-let sofaRotationAngle = 0;
+const sofaRotationAngle = 0;
+let isDraggingSofa = false;
 
 let initFlag = true;
-const RADIUS = 100;
+const RADIUS = 30;
 
+// Состояния
 /** @type {(points: import("../../../../models/base/IPoint").IPoint[]) => void} */
 export const init = (points) => {
 	if (initFlag) sofaPos = getRoomCenterPoint(sofaImage, points);
@@ -33,28 +34,6 @@ export const stopDraggingSofa = () => {
 	isDraggingSofa = false;
 };
 
-// ---------------------------------
-
-/** @type {(points: import("../../../../models/base/IPoint.js").IPoint[]) => {start: import("../../../../models/base/IPoint.js").IPoint, end: import("../../../models/base/IPoint.js").IPoint}[]} */
-const getWalls = (points) => {
-	const walls = [];
-	for (let i = 0; i < points.length; i++) {
-		const start = points[i];
-		const end = points[(i + 1) % points.length];
-		walls.push({ start, end });
-	}
-	return walls;
-};
-
-/** @type {(sofaPos: import("../../../../models/base/IPoint").IPoint, wallPoint: import("../../../../models/base/IPoint").IPoint) => number} */
-const getSofaRotationAngle = (sofaPos, wallPoint) => {
-	const sofaBackX = sofaPos.x + sofaImage.width / 2; // Задняя часть дивана
-	const sofaBackY = sofaPos.y + sofaImage.height / 2; // Задняя часть дивана
-	const deltaX = wallPoint.x - sofaBackX;
-	const deltaY = wallPoint.y - sofaBackY;
-	return Math.atan2(deltaY, deltaX) * (180 / Math.PI); // Угол в градусах
-};
-
 /** @type {(mousePosition: import("../../../../models/base/IPoint").IPoint, points: import("../../../../models/base/IPoint").IPoint[]) => boolean} */
 export const updateSofaPosition = (mousePos, points) => {
 	if (isDraggingSofa) {
@@ -63,56 +42,65 @@ export const updateSofaPosition = (mousePos, points) => {
 			y: mousePos.y - sofaImage.height / 2,
 		};
 
-		if (isPointInsideRoom(newSofaPosition, points)) {
-			sofaPos = newSofaPosition;
+		const sides = getRoomSides(points);
+		let isMagnetized = false;
 
-			// Проверяем магнитное примагничивание к стенам
-			const walls = getWalls(points);
-			let closestDistance = RADIUS;
-			let closestWall = null;
+		for (const side of sides) {
+			const { start, end } = side;
+			const lineVector = { x: end.x - start.x, y: end.y - start.y };
+			const lineLength = Math.hypot(lineVector.x, lineVector.y);
+			const normalizedLine = {
+				x: lineVector.x / lineLength,
+				y: lineVector.y / lineLength,
+			};
 
-			for (const wall of walls) {
-				const distance = pointToLineDistance(sofaPos, wall.start, wall.end);
-				if (distance < closestDistance) {
-					closestDistance = distance;
-					closestWall = wall;
+			const topCenter = {
+				x: newSofaPosition.x + sofaImage.width / 2,
+				y: newSofaPosition.y,
+			};
+
+			const toLineStart = {
+				x: topCenter.x - start.x,
+				y: topCenter.y - start.y,
+			};
+			const projectionLength =
+				toLineStart.x * normalizedLine.x + toLineStart.y * normalizedLine.y;
+
+			if (projectionLength >= 0 && projectionLength <= lineLength) {
+				const closestPoint = {
+					x: start.x + projectionLength * normalizedLine.x,
+					y: start.y + projectionLength * normalizedLine.y,
+				};
+
+				if (
+					Math.hypot(
+						closestPoint.x - topCenter.x,
+						closestPoint.y - topCenter.y,
+					) < RADIUS
+				) {
+					newSofaPosition.x = closestPoint.x - sofaImage.width / 2;
+					newSofaPosition.y = closestPoint.y;
+					isMagnetized = true;
+					break;
 				}
 			}
+		}
 
-			if (closestWall) {
-				const angle = getSofaRotationAngle(sofaPos, closestWall.start);
-				sofaRotationAngle = angle;
-			}
+		if (isMagnetized || isPointInsideRoom(newSofaPosition, points)) {
+			sofaPos = newSofaPosition;
 		}
 	}
 };
 
-/** @type {(point: import("../../../../models/base/IPoint.js").IPoint, start: import("../../../../models/base/IPoint.js").IPoint, end: import("../../../models/base/IPoint.js").IPoint) => number} */
-const pointToLineDistance = (point, start, end) => {
-	const A = point.x - start.x;
-	const B = point.y - start.y;
-	const C = end.x - start.x;
-	const D = end.y - start.y;
+// ---------------------------------
 
-	const dot = A * C + B * D;
-	const len_sq = C * C + D * D;
-	const param = len_sq !== 0 ? dot / len_sq : -1;
-
-	let closestX = 0;
-	let closestY = 0;
-
-	if (param < 0) {
-		closestX = start.x;
-		closestY = start.y;
-	} else if (param > 1) {
-		closestX = end.x;
-		closestY = end.y;
-	} else {
-		closestX = start.x + param * C;
-		closestY = start.y + param * D;
+/** @type {(points: import("../../../../models/base/IPoint.js").IPoint[]) => { start: import("../../../../models/base/IPoint.js").IPoint, end: import("../../../models/base/IPoint.js").IPoint }[]} */
+const getRoomSides = (points) => {
+	const sides = [];
+	for (let i = 0; i < points.length; i++) {
+		const start = points[i];
+		const end = points[(i + 1) % points.length];
+		sides.push({ start, end });
 	}
-
-	const dx = point.x - closestX;
-	const dy = point.y - closestY;
-	return Math.sqrt(dx * dx + dy * dy);
+	return sides;
 };
