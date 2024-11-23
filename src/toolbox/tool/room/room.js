@@ -4,79 +4,18 @@ import { Handlers } from "../handlers/index.js";
 import { getMousePoint } from "../utils/getMousePoint.js";
 import * as Sofa from "./furniture/sofa.js";
 import { getMagnetPoint } from "./getMagnetPoint.js";
+import { handleHoverMove } from "./handleHoverMove.js";
 
-/**
- * @template T
- * @typedef {import("../../../board/methods/Methods.js").IMethods & T} IRoomReturn
- */
-
-/**
- * @typedef {object} IRoom
- * @property {() => IRoomReturn<Pick<IRoom, "roomHover">>} roomClick
- * @property {() => IRoomReturn<Pick<IRoom, "roomClick">>} roomHover
- * @property {() => boolean} isDrawEnded
- * @property {() => import("../../../models/base/IPoint.js").IPoint[]} points
- */
-
-const squareSize = 5;
 /** @type {import("../../../models/base/IPoint.js").IPoint[]} */
 export const points = []; // Массив для хранения точек
 export let isDrawEnded = false;
 
-/** @type {IRoom["roomHover"]} */
+/** @type {import("./Room.js").IRoom["roomHover"]} */
 const roomHover = () => {
 	const { mouseMove } = Handlers.getMouseHandlers();
 
-	if (!isDrawEnded && mouseMove.e && (mouseMove.flag || points.length)) {
-		/** @type {import ("../../../models/base/ISize.js").ISize} */
-		const size = { h: squareSize, w: squareSize };
-		const mousePosition = getMousePoint(mouseMove.e);
-		const fillStyle = "black";
-		const fillStyleAction = "blue";
-
-		// Рисуем точки из массива
-		for (const p of points) {
-			Draw.rect({ rect: { position: p, size: size } }, { fillStyle });
-		}
-
-		if (points.length) {
-			const magnetPoint = getMagnetPoint(points, mousePosition);
-			if (!magnetPoint) {
-				// рисуем линию между точками и квадрат на ховере
-				Draw.line({ path: points, mousePosition });
-				Draw.rect(
-					{ rect: { position: mousePosition, size: size } },
-					{ fillStyle },
-				);
-
-				return { ...Methods, roomClick };
-			}
-
-			// рисуем линию и квадрат к магнитной точке
-			Draw.line(
-				{ path: points, mousePosition: magnetPoint.mousePosition },
-				{ fill: isDrawEnded },
-			);
-			if (!magnetPoint.isFirstPoint) {
-				Draw.rect(
-					{ rect: { position: magnetPoint.mousePosition, size: size } },
-					{ fillStyle },
-				);
-
-				return { ...Methods, roomClick };
-			}
-			// помечаем возможно финиша с помощью цвета
-			Draw.rect(
-				{ rect: { position: magnetPoint.mousePosition, size: size } },
-				{ fillStyle: fillStyleAction },
-			);
-
-			return { ...Methods, roomClick };
-		}
-
-		// Рендерим квадрат на ховер даже если нет точек
-		Draw.rect({ rect: { position: mousePosition, size: size } }, { fillStyle });
-	}
+	if (!isDrawEnded && mouseMove.e && (mouseMove.flag || points.length))
+		handleHoverMove({ e: mouseMove.e, isDrawEnded, points });
 
 	if (isDrawEnded && mouseMove.e && (mouseMove.flag || points.length)) {
 		const mousePosition = getMousePoint(mouseMove.e);
@@ -89,7 +28,7 @@ const roomHover = () => {
 	return { ...Methods, roomClick };
 };
 
-/** @type {IRoom["roomClick"]} */
+/** @type {import("./Room.js").IRoom["roomClick"]} */
 const roomClick = () => {
 	const { mouseDown, mouseUp } = Handlers.getMouseHandlers();
 
@@ -125,10 +64,10 @@ const roomClick = () => {
 	return { ...Methods, roomHover };
 };
 
-/** @type {IRoom} */
+/** @type {import("./Room.js").IRoom} */
 export const Room = {
 	roomClick,
 	roomHover,
-	isDrawEnded: () => isDrawEnded,
-	points: () => points,
+	getIsDrawEnded: () => isDrawEnded,
+	getPoints: () => points,
 };
