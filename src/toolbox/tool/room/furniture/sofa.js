@@ -63,14 +63,17 @@ export const updateSofaPosition = (mousePos, points) => {
 				y: lineVector.y / lineLength,
 			};
 
-			const topCenter = {
-				x: newSofaPosition.x + sofaImage.width / 2,
-				y: newSofaPosition.y,
+			const offsetX = sofaImage.width / 2;
+			const offsetY = sofaImage.height / 2;
+
+			const greenEdgeCenter = {
+				x: newSofaPosition.x + offsetX,
+				y: newSofaPosition.y + offsetY,
 			};
 
 			const toLineStart = {
-				x: topCenter.x - start.x,
-				y: topCenter.y - start.y,
+				x: greenEdgeCenter.x - start.x,
+				y: greenEdgeCenter.y - start.y,
 			};
 			const projectionLength =
 				toLineStart.x * normalizedLine.x + toLineStart.y * normalizedLine.y;
@@ -84,12 +87,12 @@ export const updateSofaPosition = (mousePos, points) => {
 
 				if (
 					Math.hypot(
-						closestPoint.x - topCenter.x,
-						closestPoint.y - topCenter.y,
+						closestPoint.x - greenEdgeCenter.x,
+						closestPoint.y - greenEdgeCenter.y,
 					) < d.radius
 				) {
-					newSofaPosition.x = closestPoint.x - sofaImage.width / 2;
-					newSofaPosition.y = closestPoint.y;
+					newSofaPosition.x = closestPoint.x - offsetX;
+					newSofaPosition.y = closestPoint.y - offsetY;
 					isMagnetized = true;
 
 					// Вычисляем угол поворота дивана
