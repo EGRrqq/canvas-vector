@@ -1,14 +1,9 @@
 import { Board } from "./board/index.js";
-
-document.addEventListener("DOMContentLoaded", render);
+import * as StartBtn from "./ui/startBtn/index.js";
 
 const Canvas = Board("board", { alpha: false });
-
-function render() {
-	Canvas.clear()
-		.scale()
-		.updateSettings({ bgColor: "#fff" })
-		.setActiveTool("room");
-
-	window.requestAnimationFrame(render);
-}
+document.addEventListener(
+	"DOMContentLoaded",
+	() => StartBtn.init("start-btn", Canvas),
+	{ once: true },
+);
