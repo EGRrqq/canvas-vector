@@ -31,6 +31,7 @@ canvas#board {
 
 button#start-btn {
 	--shadow-shift: -0.15rem;
+	--bg-color: aliceblue;
 
 	position: absolute;
 	background: transparent;
@@ -43,16 +44,16 @@ button#start-btn {
 	margin: 1rem;
 
 	&:hover {
-		background: rgb(29 28 28 / 5%);
+		background: var(--bg-color);
 	}
 
 	&:active {
 		transform: translate(var(--shadow-shift), var(--shadow-shift));
 		box-shadow: none;
-		outline: solid;
 	}
 
 	&:focus-visible {
 		outline: none;
+		background: var(--bg-color);
 	}
 }
