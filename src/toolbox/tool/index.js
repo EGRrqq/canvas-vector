@@ -1,4 +1,4 @@
-import { Room } from "./room/room.js";
+import { Room } from "./room/index.js";
 
 export const Tools = {
 	room: Room,

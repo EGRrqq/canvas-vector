@@ -1,22 +1,15 @@
+import { Methods } from "../board/methods/index.js";
 import { Tools } from "./tool/index.js";
 
-/** @typedef {{ [P in import("./tool/Tool").TToolsType]: import("./tool/Tool.js").TTools[P]}} TActiveTool */
+/** @type {import("./tool/Tool.js").ITool} */
+let activeTool = Tools.room;
 
-/** @type {TActiveTool} */
-let activeTool = { room: Tools.room };
-
-/** @typedef {(type: import("./tool/Tool").TToolsType) => {getActiveTool: TGetActiveTool}} TSetActiveTool*/
-/** @typedef {() => TActiveTool} TGetActiveTool*/
-
-/** @type{TGetActiveTool} */
-export const getActiveTool = () => activeTool;
+/** @typedef {(type: keyof import("./tool/Tool").TTools) => import("../board/methods/Methods.js").IMethods} TSetActiveTool*/
 
 /** @type {TSetActiveTool} */
 export const setActiveTool = (type) => {
-	activeTool = { [type]: Tools[type] };
+	activeTool = Tools[type];
+	activeTool.init();
 
-	return { getActiveTool };
+	return Methods;
 };
-
-/** @type{() => import("./tool/Tool.js").TTools} */
-export const getTools = () => Tools;

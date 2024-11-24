@@ -2,7 +2,7 @@ import { Methods } from "../../../board/methods/index.js";
 import { Draw } from "../../../draw/index.js";
 import { getMousePoint } from "../utils/getMousePoint.js";
 import { getMagnetPoint } from "./getMagnetPoint.js";
-import { Room } from "./room.js";
+import { roomClick } from "./room.js";
 
 const SQUARE_SIZE = 5;
 /** @type {import ("../../../models/base/ISize.js").ISize} */
@@ -29,7 +29,7 @@ export const handleHoverDrawingMove = ({ points, e, isDrawEnded }) => {
 				{ fillStyle },
 			);
 
-			return { ...Methods, roomClick: Room.roomClick };
+			return { ...Methods, roomClick };
 		}
 		// рисуем линию и квадрат к магнитной точке
 		Draw.line(
@@ -41,7 +41,7 @@ export const handleHoverDrawingMove = ({ points, e, isDrawEnded }) => {
 			{ fillStyle: magnetPoint.isFirstPoint ? fillStyleAction : fillStyle },
 		);
 
-		return { ...Methods, roomClick: Room.roomClick };
+		return { ...Methods, roomClick };
 	}
 
 	// Рендерим квадрат на ховер даже если нет точек

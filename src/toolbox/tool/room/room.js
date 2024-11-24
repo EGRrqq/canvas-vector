@@ -11,7 +11,7 @@ export const points = []; // Массив для хранения точек
 export let isDrawEnded = false;
 
 /** @type {import("./Room.js").IRoom["roomHover"]} */
-const roomHover = () => {
+export const roomHover = () => {
 	const { mouseMove } = Handlers.getMouseHandlers();
 
 	if (!isDrawEnded && mouseMove.e && (mouseMove.flag || points.length))
@@ -29,7 +29,7 @@ const roomHover = () => {
 };
 
 /** @type {import("./Room.js").IRoom["roomClick"]} */
-const roomClick = () => {
+export const roomClick = () => {
 	const { mouseDown, mouseUp } = Handlers.getMouseHandlers();
 
 	if (!isDrawEnded && mouseDown.flag && mouseDown.e) {
@@ -62,12 +62,4 @@ const roomClick = () => {
 	}
 
 	return { ...Methods, roomHover };
-};
-
-/** @type {import("./Room.js").IRoom} */
-export const Room = {
-	roomClick,
-	roomHover,
-	getIsDrawEnded: () => isDrawEnded,
-	getPoints: () => points,
 };

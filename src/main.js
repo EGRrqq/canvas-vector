@@ -8,9 +8,7 @@ function render() {
 	Canvas.clear()
 		.scale()
 		.updateSettings({ bgColor: "#fff" })
-		.getTools()
-		.room.roomHover()
-		.roomClick();
+		.setActiveTool("room");
 
 	window.requestAnimationFrame(render);
 }

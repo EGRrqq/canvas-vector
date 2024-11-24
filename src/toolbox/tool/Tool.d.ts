@@ -1,6 +1,8 @@
+import type { IMethods } from "../../board/methods/Methods";
 import type { Tools } from "./index.js";
 
-export type TToolState = () => void;
-
 export type TTools = typeof Tools;
-export type TToolsType = keyof TTools;
+
+export interface ITool {
+	init: () => IMethods;
+}
