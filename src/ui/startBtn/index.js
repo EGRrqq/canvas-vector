@@ -2,7 +2,7 @@
 export const init = (id, Canvas) => {
 	const btn = getStartBtn(id);
 
-	btn.addEventListener("click", () => render(Canvas), { once: true });
+	btn.addEventListener("click", () => onClick(Canvas));
 };
 
 /** @type {(id: string) => HTMLButtonElement} */
@@ -16,11 +16,17 @@ const getStartBtn = (id) => {
 };
 
 /** @type {(Canvas: import("../../board/methods/Methods").IMethods) => void} */
-function render(Canvas) {
-	Canvas.clear()
-		.scale()
-		.updateSettings({ bgColor: "#fff" })
-		.setActiveTool("room");
+function onClick(Canvas) {
+	const toolType = "room";
+	const render = () => {
+		Canvas.clear()
+			.scale()
+			.updateSettings({ bgColor: "#fff" })
+			.setActiveTool(toolType);
 
-	window.requestAnimationFrame(() => render(Canvas));
+		window.requestAnimationFrame(render);
+	};
+
+	Canvas.getTools()[toolType].resetData();
+	render();
 }

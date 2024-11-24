@@ -13,3 +13,6 @@ export const setActiveTool = (type) => {
 
 	return Methods;
 };
+
+/** @type{() => import("./tool/Tool.js").TTools} */
+export const getTools = () => Tools;

@@ -5,4 +5,5 @@ export type TTools = typeof Tools;
 
 export interface ITool {
 	init: () => IMethods;
+	resetData: () => IMethods;
 }

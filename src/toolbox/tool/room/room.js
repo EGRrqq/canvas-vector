@@ -7,8 +7,8 @@ import { getMagnetPoint } from "./getMagnetPoint.js";
 import { handleHoverDrawingMove } from "./handleHoverDrawingMove.js";
 
 /** @type {import("../../../models/base/IPoint.js").IPoint[]} */
-export const points = []; // Массив для хранения точек
-export let isDrawEnded = false;
+let points = []; // Массив для хранения точек
+let isDrawEnded = false;
 
 /** @type {import("./Room.js").IRoom["roomHover"]} */
 export const roomHover = () => {
@@ -62,4 +62,13 @@ export const roomClick = () => {
 	}
 
 	return { ...Methods, roomHover };
+};
+
+export const resetData = () => {
+	points = [];
+	isDrawEnded = false;
+
+	Sofa.resetSofaData();
+
+	return Methods;
 };

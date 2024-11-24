@@ -6,38 +6,45 @@ import { isPointInsideFurniture } from "./furniture.js";
 const sofaImage = new Image();
 sofaImage.src = "./toolbox/tool/room/furniture/sofa.png";
 
-/** @type {import("../../../../models/base/IPoint").IPoint} */
-let sofaPos = { x: 0, y: 0 };
-let sofaRotationAngle = 0;
-let isDraggingSofa = false;
+/**
+ * @typedef {object} sofaData
+ * @property {import("../../../../models/base/IPoint").IPoint} sofaPos
+ * @property {number} sofaRotationAngle
+ * @property {number} radius
+ * @property {boolean} initFlag
+ * @property {boolean} isDraggingSofa
+ */
 
-let initFlag = true;
-const RADIUS = 30;
+/** @type{sofaData} */
+const d = {};
+resetSofaData();
 
-// Состояния
 /** @type {(points: import("../../../../models/base/IPoint").IPoint[]) => void} */
 export const init = (points) => {
-	if (initFlag) sofaPos = getRoomCenterPoint(sofaImage, points);
-	initFlag = false;
+	if (d.initFlag) d.sofaPos = getRoomCenterPoint(sofaImage, points);
+	d.initFlag = false;
 
-	console.log(sofaRotationAngle);
-	Draw.image({ image: sofaImage, position: sofaPos, angle: sofaRotationAngle });
+	Draw.image({
+		image: sofaImage,
+		position: d.sofaPos,
+		angle: d.sofaRotationAngle,
+	});
 };
 
 /** @type {(mousePosition: import("../../../../models/base/IPoint").IPoint) => void} */
 export const startDraggingSofa = (mousePos) => {
-	if (isPointInsideFurniture(sofaImage, mousePos, sofaPos)) {
-		isDraggingSofa = true;
+	if (isPointInsideFurniture(sofaImage, mousePos, d.sofaPos)) {
+		d.isDraggingSofa = true;
 	}
 };
 
 export const stopDraggingSofa = () => {
-	isDraggingSofa = false;
+	d.isDraggingSofa = false;
 };
 
 /** @type {(mousePosition: import("../../../../models/base/IPoint").IPoint, points: import("../../../../models/base/IPoint").IPoint[]) => boolean} */
 export const updateSofaPosition = (mousePos, points) => {
-	if (isDraggingSofa) {
+	if (d.isDraggingSofa) {
 		const newSofaPosition = {
 			x: mousePos.x - sofaImage.width / 2,
 			y: mousePos.y - sofaImage.height / 2,
@@ -45,7 +52,7 @@ export const updateSofaPosition = (mousePos, points) => {
 
 		const sides = getRoomSides(points);
 		let isMagnetized = false;
-		let newRotationAngle = sofaRotationAngle; // Инициализируем новый угол поворота
+		let newRotationAngle = d.sofaRotationAngle; // Инициализируем новый угол поворота
 
 		for (const side of sides) {
 			const { start, end } = side;
@@ -73,12 +80,13 @@ export const updateSofaPosition = (mousePos, points) => {
 					x: start.x + projectionLength * normalizedLine.x,
 					y: start.y + projectionLength * normalizedLine.y,
 				};
+				Draw.rect({ rect: { position: closestPoint, size: { h: 5, w: 5 } } });
 
 				if (
 					Math.hypot(
 						closestPoint.x - topCenter.x,
 						closestPoint.y - topCenter.y,
-					) < RADIUS
+					) < d.radius
 				) {
 					newSofaPosition.x = closestPoint.x - sofaImage.width / 2;
 					newSofaPosition.y = closestPoint.y;
@@ -92,25 +100,37 @@ export const updateSofaPosition = (mousePos, points) => {
 		}
 
 		if (isMagnetized || isPointInsideRoom(newSofaPosition, points)) {
-			sofaPos = newSofaPosition;
-			sofaRotationAngle = newRotationAngle; // Применяем новый угол поворота
+			d.sofaPos = newSofaPosition;
+			d.sofaRotationAngle = newRotationAngle; // Применяем новый угол поворота
 		}
 		if (!isMagnetized) {
-			sofaRotationAngle = 0;
+			d.sofaRotationAngle = 0;
 		}
 	}
 };
+
+export function resetSofaData() {
+	d.sofaPos = { x: 0, y: 0 };
+	d.sofaRotationAngle = 0;
+	d.isDraggingSofa = false;
+	d.initFlag = true;
+	d.radius = 15;
+
+	return d;
+}
 
 // ---------------------------------
 
 /** @type {(points: import("../../../../models/base/IPoint.js").IPoint[]) => { start: import("../../../../models/base/IPoint.js").IPoint, end: import("../../../models/base/IPoint.js").IPoint }[]} */
 const getRoomSides = (points) => {
 	const sides = [];
+
 	for (let i = 0; i < points.length; i++) {
 		const start = points[i];
 		const end = points[(i + 1) % points.length];
 		sides.push({ start, end });
 	}
+
 	return sides;
 };
 
@@ -118,30 +138,6 @@ const getRoomSides = (points) => {
 const calculateAngle = ({ start, end }) => {
 	const dx = end.x - start.x;
 	const dy = end.y - start.y;
+
 	return Math.atan2(dy, dx) * (180 / Math.PI) + 180;
-};
-
-/** @type {(position: import("../../../../models/base/IPoint").IPoint, angle: number) => { top: import("../../../../models/base/IPoint").IPoint, bottom: import("../../../../models/base/IPoint").IPoint, left: import("../../../../models/base/IPoint").IPoint, right: import("../../../../models/base/IPoint").IPoint }} */
-const getSofaKeyPoints = (position, angle) => {
-	const centerX = position.x + sofaImage.width / 2;
-	const centerY = position.y + sofaImage.height / 2;
-
-	const top = {
-		x: centerX + (sofaImage.width / 2) * Math.cos(angle),
-		y: centerY - (sofaImage.height / 2) * Math.sin(angle),
-	};
-	const bottom = {
-		x: centerX - (sofaImage.width / 2) * Math.cos(angle),
-		y: centerY + (sofaImage.height / 2) * Math.sin(angle),
-	};
-	const left = {
-		x: centerX - (sofaImage.width / 2) * Math.sin(angle),
-		y: centerY - (sofaImage.height / 2) * Math.cos(angle),
-	};
-	const right = {
-		x: centerX + (sofaImage.width / 2) * Math.sin(angle),
-		y: centerY + (sofaImage.height / 2) * Math.cos(angle),
-	};
-
-	return { top, bottom, left, right };
 };

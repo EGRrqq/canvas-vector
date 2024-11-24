@@ -1,5 +1,5 @@
 import { Methods } from "../../../board/methods/index.js";
-import { roomClick, roomHover } from "./room.js";
+import { resetData, roomClick, roomHover } from "./room.js";
 
 /** @type {import("../Tool").ITool} */
 export const Room = {
@@ -9,4 +9,5 @@ export const Room = {
 
 		return Methods;
 	},
+	resetData,
 };
